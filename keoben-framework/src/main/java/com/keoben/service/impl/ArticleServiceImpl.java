@@ -144,13 +144,24 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 		return ResponseResult.okResult();
 	}
 
-	//@Override
-	//public ResponseResult<PageVo> pageArticleList(Integer pageNum, Integer pageSize, ArticleListDto articleListDto) {
-	//	//分页查询
-	//	LambdaQueryWrapper queryWrapper = new LambdaQueryWrapper();
-	//	//模糊查询
-	//	queryWrapper.like(StringUtils.hasText(articleListDto.getTitle()), Article::getTitle, articleListDto.getTitle());
-	//	return null;
-	//}
+	@Override
+	public ResponseResult<PageVo> pageArticleList(Integer pageNum, Integer pageSize, ArticleListDto articleListDto) {
+		//分页查询
+		LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+		//模糊查询
+		queryWrapper.like(StringUtils.hasText(articleListDto.getTitle()),
+				Article::getTitle, articleListDto.getTitle());
+		queryWrapper.like(StringUtils.hasText(articleListDto.getSummary()),
+				Article::getSummary, articleListDto.getSummary());
+		Page<Article> page = new Page<>();
+		page.setCurrent(pageNum);
+		page.setSize(pageSize);
+		page(page, queryWrapper);
+		//封装数据返回
+		PageVo pageVo = new PageVo(page.getRecords(),page.getTotal());
+		return ResponseResult.okResult(pageVo);
+	}
+
+
 
 }

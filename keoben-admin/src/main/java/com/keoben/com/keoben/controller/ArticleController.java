@@ -20,10 +20,10 @@ public class ArticleController {
 		return articleService.add(article);
 	}
 
-	//@GetMapping("/list")
-	//public ResponseResult<PageVo> pageArticleList(Integer pageNum, Integer pageSize, ArticleListDto articleListDto) {
-	//	return articleService.pageArticleList(pageNum, pageSize, articleListDto);
-	//}
+	@GetMapping("/list")
+	public ResponseResult<PageVo> pageArticleList(Integer pageNum, Integer pageSize, ArticleListDto articleListDto) {
+		return articleService.pageArticleList(pageNum, pageSize, articleListDto);
+	}
 
 }
 
