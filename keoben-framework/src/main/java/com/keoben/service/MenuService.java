@@ -21,5 +21,13 @@ public interface MenuService extends IService<Menu> {
 	List<Menu> selectRouterMenuTreeByUserId(Long userId);
 
 	ResponseResult<PageVo> pageMenuList(MenuListDto menuListDto);
+
+	ResponseResult addMenu(Menu menu);
+
+	ResponseResult getMenuById(Long id);
+
+	ResponseResult updateMenu(Menu menu);
+
+	ResponseResult deleteMenuById(Long id);
 }
 

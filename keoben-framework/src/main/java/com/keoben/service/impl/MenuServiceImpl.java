@@ -7,6 +7,7 @@ import com.keoben.constants.SystemConstants;
 import com.keoben.domain.ResponseResult;
 import com.keoben.domain.dto.MenuListDto;
 import com.keoben.domain.entity.Menu;
+import com.keoben.domain.enums.AppHttpCodeEnum;
 import com.keoben.domain.vo.PageVo;
 import com.keoben.mapper.MenuMapper;
 import com.keoben.service.MenuService;
@@ -72,6 +73,40 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 		queryWrapper.orderByAsc(Menu::getOrderNum);
 		List<Menu> menus = list(queryWrapper);
 		return ResponseResult.okResult(menus);
+	}
+
+	@Override
+	public ResponseResult addMenu(Menu menu) {
+		save(menu);
+		return ResponseResult.okResult();
+	}
+
+	@Override
+	public ResponseResult getMenuById(Long id) {
+		Menu menu = getById(id);
+		return ResponseResult.okResult(menu);
+	}
+
+	@Override
+	public ResponseResult updateMenu(Menu menu) {
+		if(menu.getParentId().equals(menu.getId())) {
+			return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR,
+					"修改菜单'写博文'失败，上级菜单不能选择自己");
+		}
+		updateById(menu);
+		return ResponseResult.okResult();
+	}
+
+	@Override
+	public ResponseResult deleteMenuById(Long id) {
+		LambdaQueryWrapper<Menu> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(Menu::getParentId, id);
+		List<Menu> list = list(wrapper);
+		if(list.size() > 0) {
+			return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR, "存在子菜单不允许删除");
+		}
+		removeById(id);
+		return ResponseResult.okResult();
 	}
 
 	private List<Menu> builderMenuTree(List<Menu> menus, long parentId) {
