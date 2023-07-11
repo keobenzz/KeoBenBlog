@@ -26,6 +26,11 @@ public class ArticleController {
 		return articleService.articleList(pageNum, pageSize, categoryId);
 	}
 
+	@PutMapping("/updateViewCount/{id}")
+	public ResponseResult updateViewCount(@PathVariable("id") Long id) {
+		return articleService.updateViewCount(id);
+	}
+
 	@GetMapping("/{id}")
 	public ResponseResult getArticleDetail(@PathVariable("id") Long id) {
 		return articleService.getArticleDetail(id);

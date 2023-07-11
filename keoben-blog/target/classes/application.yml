@@ -31,3 +31,7 @@ mybatis-plus:
       logic-not-delete-value: 0
       id-type: auto
 
+oss:
+  accessKey: vHHMtIpHQX0K9HQjSlRCM_2W1h_dDtKM51ekbquu
+  secretKey: XJELW8MBfn-99Edd4SZP2f-UodCIrWnSn5XkAoNH
+  bucket: keoben-blog
