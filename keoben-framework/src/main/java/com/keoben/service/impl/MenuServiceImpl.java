@@ -1,13 +1,18 @@
 package com.keoben.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.keoben.constants.SystemConstants;
+import com.keoben.domain.ResponseResult;
+import com.keoben.domain.dto.MenuListDto;
 import com.keoben.domain.entity.Menu;
+import com.keoben.domain.vo.PageVo;
 import com.keoben.mapper.MenuMapper;
 import com.keoben.service.MenuService;
 import com.keoben.utils.SecurityUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,6 +58,20 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 		//先找出第一层的菜单 然后去找他们的子菜单设置到children属性中
 		List<Menu> menuTree = builderMenuTree(menus, 0L);
 		return menuTree;
+	}
+
+	@Override
+	public ResponseResult<PageVo> pageMenuList(MenuListDto menuListDto) {
+		//分页查询
+		LambdaQueryWrapper<Menu> queryWrapper = new LambdaQueryWrapper<>();
+		//模糊查询
+		queryWrapper.like(StringUtils.hasText(menuListDto.getMenuName()),
+					Menu::getMenuName, menuListDto.getMenuName());
+		queryWrapper.like(StringUtils.hasText(menuListDto.getStatus()),
+					Menu::getStatus, menuListDto.getStatus());
+		queryWrapper.orderByAsc(Menu::getOrderNum);
+		List<Menu> menus = list(queryWrapper);
+		return ResponseResult.okResult(menus);
 	}
 
 	private List<Menu> builderMenuTree(List<Menu> menus, long parentId) {
