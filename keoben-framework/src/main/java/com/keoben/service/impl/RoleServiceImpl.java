@@ -1,10 +1,16 @@
 package com.keoben.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.keoben.domain.ResponseResult;
+import com.keoben.domain.dto.RoleListDto;
 import com.keoben.domain.entity.Role;
+import com.keoben.domain.vo.PageVo;
 import com.keoben.mapper.RoleMapper;
 import com.keoben.service.RoleService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +34,23 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 		}
 		//否则查询用户所具有的角色信息
 		return getBaseMapper().selectRoleKeyByUserId(id);
+	}
+
+	@Override
+	public ResponseResult<PageVo> pageRoleList(Integer pageNum, Integer pageSize, RoleListDto roleListDto) {
+		LambdaQueryWrapper<Role> wrapper = new LambdaQueryWrapper<>();
+		wrapper.like(StringUtils.hasText(roleListDto.getRoleName()),
+				Role::getRoleName, roleListDto.getRoleName());
+		wrapper.eq(StringUtils.hasText(roleListDto.getStatus()),
+				Role::getStatus, roleListDto.getRoleName());
+		wrapper.orderByAsc(Role::getRoleSort);
+
+		Page<Role> page = new Page<>();
+		page.setCurrent(pageNum);
+		page.setSize(pageSize);
+		page(page, wrapper);
+		PageVo pageVo = new PageVo(page.getRecords(), page.getTotal());
+		return ResponseResult.okResult(pageVo);
 	}
 }
 
