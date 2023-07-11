@@ -5,6 +5,9 @@ import com.keoben.domain.ResponseResult;
 import com.keoben.domain.dto.TagListDto;
 import com.keoben.domain.entity.Tag;
 import com.keoben.domain.vo.PageVo;
+import com.keoben.domain.vo.TagVo;
+
+import java.util.List;
 
 /**
  * 标签(Tag)表服务接口
@@ -18,10 +21,12 @@ public interface TagService extends IService<Tag> {
 
 	ResponseResult addTag(Tag tag);
 
-	ResponseResult deleteTag(Integer id);
+	ResponseResult deleteTag(Long id);
 
-	ResponseResult getTag(Integer id);
+	ResponseResult getTag(Long id);
 
 	ResponseResult updateTag(Tag tag);
+
+	List<TagVo> listAllTag();
 }
 

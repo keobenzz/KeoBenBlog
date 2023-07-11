@@ -3,6 +3,9 @@ package com.keoben.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.keoben.domain.ResponseResult;
 import com.keoben.domain.entity.Category;
+import com.keoben.domain.vo.CategoryVo;
+
+import java.util.List;
 
 /**
  * 分类表(Category)表服务接口
@@ -13,5 +16,8 @@ import com.keoben.domain.entity.Category;
 public interface CategoryService extends IService<Category> {
 
 	ResponseResult getCategoryList();
+
+	List<CategoryVo> listAllcategory();
+
 }
 

@@ -8,11 +8,15 @@ import com.keoben.domain.dto.TagListDto;
 import com.keoben.domain.entity.Tag;
 import com.keoben.domain.enums.AppHttpCodeEnum;
 import com.keoben.domain.vo.PageVo;
+import com.keoben.domain.vo.TagVo;
 import com.keoben.exception.SystemException;
 import com.keoben.mapper.TagMapper;
 import com.keoben.service.TagService;
+import com.keoben.utils.BeanCopyUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 /**
  * 标签(Tag)表服务实现类
@@ -53,13 +57,13 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
 	}
 
 	@Override
-	public ResponseResult deleteTag(Integer id) {
+	public ResponseResult deleteTag(Long id) {
 		removeById(id);
 		return ResponseResult.okResult();
 	}
 
 	@Override
-	public ResponseResult getTag(Integer id) {
+	public ResponseResult getTag(Long id) {
 		Tag tag = getById(id);
 		return ResponseResult.okResult(tag);
 	}
@@ -68,6 +72,15 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
 	public ResponseResult updateTag(Tag tag) {
 		updateById(tag);
 		return ResponseResult.okResult();
+	}
+
+	@Override
+	public List<TagVo> listAllTag() {
+		LambdaQueryWrapper<Tag>  wrapper = new LambdaQueryWrapper<>();
+		wrapper.select(Tag::getId, Tag::getName);
+		List<Tag> list = list(wrapper);
+		List<TagVo> tagVos = BeanCopyUtils.copyBeanList(list, TagVo.class);
+		return tagVos;
 	}
 }
 
