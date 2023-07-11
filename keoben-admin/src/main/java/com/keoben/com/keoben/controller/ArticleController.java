@@ -2,12 +2,10 @@ package com.keoben.com.keoben.controller;
 
 import com.keoben.domain.ResponseResult;
 import com.keoben.domain.dto.AddArticleDto;
+import com.keoben.domain.dto.ArticleListDto;
 import com.keoben.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/content/article")
@@ -19,6 +17,11 @@ public class ArticleController {
 	@PostMapping
 	public ResponseResult add(@RequestBody AddArticleDto article) {
 		return articleService.add(article);
+	}
+
+	@GetMapping("/list")
+	public ResponseResult getArticleList(Integer pageNum, Integer pageSize, ArticleListDto articleListDto) {
+		return articleService.pageArticleList(pageNum, pageSize, articleListDto);
 	}
 
 }

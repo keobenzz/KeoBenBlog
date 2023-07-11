@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.keoben.constants.SystemConstants;
 import com.keoben.domain.ResponseResult;
 import com.keoben.domain.dto.AddArticleDto;
+import com.keoben.domain.dto.ArticleListDto;
 import com.keoben.domain.entity.Article;
 import com.keoben.domain.entity.ArticleTag;
 import com.keoben.domain.entity.Category;
@@ -141,4 +142,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 		articleTagService.saveBatch(articleTags);
 		return ResponseResult.okResult();
 	}
+
+	@Override
+	public ResponseResult pageArticleList(Integer pageNum, Integer pageSize, ArticleListDto articleListDto) {
+		//分页查询
+
+		return null;
+	}
+
 }
