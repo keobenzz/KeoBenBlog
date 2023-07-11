@@ -5,6 +5,7 @@ import com.keoben.domain.ResponseResult;
 import com.keoben.domain.dto.AddArticleDto;
 import com.keoben.domain.dto.ArticleListDto;
 import com.keoben.domain.entity.Article;
+import com.keoben.domain.vo.PageVo;
 
 public interface ArticleService extends IService<Article> {
 
@@ -18,6 +19,5 @@ public interface ArticleService extends IService<Article> {
 
 	ResponseResult add(AddArticleDto article);
 
-
-	ResponseResult pageArticleList(Integer pageNum, Integer pageSize, ArticleListDto articleListDto);
+	//ResponseResult<PageVo> pageArticleList(Integer pageNum, Integer pageSize, ArticleListDto articleListDto);
 }

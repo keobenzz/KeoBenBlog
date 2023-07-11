@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,11 +144,13 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 		return ResponseResult.okResult();
 	}
 
-	@Override
-	public ResponseResult pageArticleList(Integer pageNum, Integer pageSize, ArticleListDto articleListDto) {
-		//分页查询
-
-		return null;
-	}
+	//@Override
+	//public ResponseResult<PageVo> pageArticleList(Integer pageNum, Integer pageSize, ArticleListDto articleListDto) {
+	//	//分页查询
+	//	LambdaQueryWrapper queryWrapper = new LambdaQueryWrapper();
+	//	//模糊查询
+	//	queryWrapper.like(StringUtils.hasText(articleListDto.getTitle()), Article::getTitle, articleListDto.getTitle());
+	//	return null;
+	//}
 
 }
