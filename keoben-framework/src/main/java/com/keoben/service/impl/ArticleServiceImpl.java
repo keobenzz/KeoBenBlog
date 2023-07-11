@@ -162,6 +162,24 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 		return ResponseResult.okResult(pageVo);
 	}
 
+	@Override
+	public Article getArticleById(Long id) {
+		Article article = getById(id);
+		return article;
+	}
+
+	@Override
+	public ResponseResult updateArticle(Article article) {
+		Long id = article.getId();
+		updateById(article);
+		return ResponseResult.okResult(getArticleById(id));
+	}
+
+	@Override
+	public ResponseResult deleteArticleById(Long id) {
+		removeById(id);
+		return ResponseResult.okResult();
+	}
 
 
 }

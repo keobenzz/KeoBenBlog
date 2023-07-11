@@ -20,4 +20,10 @@ public interface ArticleService extends IService<Article> {
 	ResponseResult add(AddArticleDto article);
 
 	ResponseResult<PageVo> pageArticleList(Integer pageNum, Integer pageSize, ArticleListDto articleListDto);
+
+	Article getArticleById(Long id);
+
+	ResponseResult updateArticle(Article article);
+
+	ResponseResult deleteArticleById(Long id);
 }
