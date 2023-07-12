@@ -73,13 +73,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 		Role role = BeanCopyUtils.copyBean(addRoleVo, Role.class);
 		save(role);
 		List<Long> menuIds = addRoleVo.getMenuIds();
-		RoleMapper roleMapper = getBaseMapper();
 		//单次循环插入
 		//menuIds.stream()
 		//		.forEach(menuId -> {
 		//			roleMapper.add(role.getId(), menuId);
 		//		});
 		//批量插入
+		RoleMapper roleMapper = getBaseMapper();
 		roleMapper.addBatch(role.getId(), menuIds);
 		return ResponseResult.okResult();
 	}
@@ -103,6 +103,16 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 		//添加新权限
 		List<Long> menuIds = updateRoleDto.getMenuIds();
 		roleMapper.addBatch(role.getId(), menuIds);
+		return ResponseResult.okResult();
+	}
+
+	@Override
+	public ResponseResult deleteRole(Long id) {
+		RoleMapper roleMapper = getBaseMapper();
+		//删除角色权限
+		roleMapper.deleteMenu(id);
+		// 删除角色
+		removeById(id);
 		return ResponseResult.okResult();
 	}
 

@@ -42,4 +42,9 @@ public class RoleController {
 		return roleService.updateRole(updateRoleDto);
 	}
 
+	@DeleteMapping("/{id}")
+	public ResponseResult deleteRole(@PathVariable Long id) {
+		return roleService.deleteRole(id);
+	}
+
 }
