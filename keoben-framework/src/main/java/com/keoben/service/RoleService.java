@@ -2,6 +2,7 @@ package com.keoben.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.keoben.domain.ResponseResult;
+import com.keoben.domain.dto.AddRoleDto;
 import com.keoben.domain.dto.ChangeStatusRoleDto;
 import com.keoben.domain.dto.RoleListDto;
 import com.keoben.domain.entity.Role;
@@ -22,5 +23,7 @@ public interface RoleService extends IService<Role> {
 	ResponseResult<PageVo> pageRoleList(Integer pageNum, Integer pageSize, RoleListDto roleListDto);
 
 	ResponseResult changeStatus(ChangeStatusRoleDto changeStatusRoleDto);
+
+	ResponseResult addRole(AddRoleDto addRoleDto);
 }
 

@@ -2,6 +2,7 @@ package com.keoben.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.keoben.domain.entity.Role;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,4 +16,8 @@ import java.util.List;
 public interface RoleMapper extends BaseMapper<Role> {
 
 	List<String> selectRoleKeyByUserId(Long userId);
+
+	void add(@Param("roleId") Long roleId, @Param("menuId") Long menuId);
+
+	void addBatch(@Param("roleId") Long id, @Param(("menuIds")) List<Long> menuIds);
 }

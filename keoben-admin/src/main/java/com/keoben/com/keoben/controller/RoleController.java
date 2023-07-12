@@ -1,6 +1,7 @@
 package com.keoben.com.keoben.controller;
 
 import com.keoben.domain.ResponseResult;
+import com.keoben.domain.dto.AddRoleDto;
 import com.keoben.domain.dto.ChangeStatusRoleDto;
 import com.keoben.domain.dto.RoleListDto;
 import com.keoben.domain.vo.PageVo;
@@ -24,5 +25,12 @@ public class RoleController {
 	public ResponseResult changeStatus(@RequestBody ChangeStatusRoleDto changeStatusRoleDto) {
 		return roleService.changeStatus(changeStatusRoleDto);
 	}
+
+
+	@PostMapping
+	public ResponseResult addRole(@RequestBody AddRoleDto addRoleDto) {
+		return roleService.addRole(addRoleDto);
+	}
+
 
 }

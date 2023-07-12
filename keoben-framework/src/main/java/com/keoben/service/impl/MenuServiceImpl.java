@@ -5,16 +5,21 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.keoben.constants.SystemConstants;
 import com.keoben.domain.ResponseResult;
+import com.keoben.domain.dto.AddRoleDto;
 import com.keoben.domain.dto.MenuListDto;
+import com.keoben.domain.dto.MenuTreeDto;
 import com.keoben.domain.entity.Menu;
+import com.keoben.domain.entity.Role;
 import com.keoben.domain.enums.AppHttpCodeEnum;
 import com.keoben.domain.vo.PageVo;
 import com.keoben.mapper.MenuMapper;
 import com.keoben.service.MenuService;
+import com.keoben.utils.BeanCopyUtils;
 import com.keoben.utils.SecurityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,6 +64,23 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 		//先找出第一层的菜单 然后去找他们的子菜单设置到children属性中
 		List<Menu> menuTree = builderMenuTree(menus, 0L);
 		return menuTree;
+	}
+
+	private List<Menu> builderMenuTree(List<Menu> menus, long parentId) {
+		List<Menu> menuTree = menus.stream()
+				.filter(menu -> menu.getParentId().equals(parentId))
+				.map(menu -> menu.setChildren(getChildren(menu, menus)))
+				.collect(Collectors.toList());
+		return menuTree;
+	}
+
+	//获取存入参数的 子menu
+	private List<Menu> getChildren(Menu menu, List<Menu> menus) {
+		List<Menu> childrenList = menus.stream()
+				.filter(m -> m.getParentId().equals(menu.getId()))
+				.map(m -> m.setChildren(getChildren(m, menus)))
+				.collect(Collectors.toList());
+		return childrenList;
 	}
 
 	@Override
@@ -109,21 +131,53 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 		return ResponseResult.okResult();
 	}
 
-	private List<Menu> builderMenuTree(List<Menu> menus, long parentId) {
-		List<Menu> menuTree = menus.stream()
-				.filter(menu -> menu.getParentId().equals(parentId))
-				.map(menu -> menu.setChildren(getChildren(menu, menus)))
-				.collect(Collectors.toList());
-		return menuTree;
+	@Override
+	public ResponseResult selectMenuTree() {
+		MenuMapper menuMapper = getBaseMapper();
+		List<Menu> menus = null;
+		//获取目录/菜单/按钮
+		menus = menuMapper.selectMenuTree();
+		//构建menuTree
+		//先找出第一层的菜单,然后去找他们的子菜单设置到children属性中去
+		List<Menu> menuTree = builderMenuTree(menus, 0L);
+		List<MenuTreeDto> list = new ArrayList<>();
+		menuTree.stream()
+				.forEach(m -> {
+					MenuTreeDto dto = new MenuTreeDto();
+					dto.setId(m.getId());
+					dto.setParentId(m.getParentId());
+					dto.setLabel(m.getMenuName());
+					changeChildren(dto, m);
+					list.add(dto);
+				});
+		return ResponseResult.okResult(list);
 	}
 
-	//获取存入参数的 子menu
-	private List<Menu> getChildren(Menu menu, List<Menu> menus) {
-		List<Menu> childrenList = menus.stream()
-				.filter(m -> m.getParentId().equals(menu.getId()))
-				.map(m -> m.setChildren(getChildren(m, menus)))
-				.collect(Collectors.toList());
-		return childrenList;
+	private void changeChildren(MenuTreeDto menuTreeDto, Menu menu) {
+		List<Menu> menuTree = menu.getChildren();
+		List<MenuTreeDto> list = new ArrayList<>();
+		menuTree.stream()
+				.forEach(m -> {
+					MenuTreeDto dto = new MenuTreeDto();
+					dto.setId(m.getId());
+					dto.setParentId(m.getParentId());
+					dto.setLabel(m.getMenuName());
+					changeChildren(dto, m);
+					list.add(dto);
+				});
+		menuTreeDto.setChildren(list);
 	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
 
