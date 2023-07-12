@@ -1,17 +1,15 @@
 package com.keoben.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.keoben.constants.SystemConstants;
 import com.keoben.domain.ResponseResult;
-import com.keoben.domain.dto.AddRoleDto;
 import com.keoben.domain.dto.MenuListDto;
-import com.keoben.domain.dto.MenuTreeDto;
+import com.keoben.domain.vo.MenuTreeVo;
 import com.keoben.domain.entity.Menu;
-import com.keoben.domain.entity.Role;
 import com.keoben.domain.enums.AppHttpCodeEnum;
 import com.keoben.domain.vo.PageVo;
+import com.keoben.domain.vo.RoleMenuVo;
 import com.keoben.mapper.MenuMapper;
 import com.keoben.service.MenuService;
 import com.keoben.utils.BeanCopyUtils;
@@ -140,10 +138,10 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 		//构建menuTree
 		//先找出第一层的菜单,然后去找他们的子菜单设置到children属性中去
 		List<Menu> menuTree = builderMenuTree(menus, 0L);
-		List<MenuTreeDto> list = new ArrayList<>();
+		List<MenuTreeVo> list = new ArrayList<>();
 		menuTree.stream()
 				.forEach(m -> {
-					MenuTreeDto dto = new MenuTreeDto();
+					MenuTreeVo dto = new MenuTreeVo();
 					dto.setId(m.getId());
 					dto.setParentId(m.getParentId());
 					dto.setLabel(m.getMenuName());
@@ -153,19 +151,66 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 		return ResponseResult.okResult(list);
 	}
 
-	private void changeChildren(MenuTreeDto menuTreeDto, Menu menu) {
+	@Override
+	public ResponseResult selectRoleMenuTree(Long id) {
+		MenuMapper menuMapper = getBaseMapper();
+		List<Menu> menus = null;
+		menus = menuMapper.selectAllMenu();
+		//封装成AddRoleVo
+		List<MenuTreeVo> menuTreeVos = menus.stream()
+				.map(menu -> {
+					MenuTreeVo menuTreeVo = BeanCopyUtils.copyBean(menu, MenuTreeVo.class);
+					menuTreeVo.setLabel(menu.getMenuName());
+					return menuTreeVo;
+				})
+				.collect(Collectors.toList());
+		//构建menuTree
+		//先找出第一层的菜单,然后去找他们的子菜单设置到children属性中去
+		List<MenuTreeVo> menuTreeVoList = builderMenuTreeVo(menuTreeVos, 0L);
+		//角色已有的权限,传回以进行回显选中√
+		List<Long> checkedKeys = null;
+		//判断是否是管理员
+		if (id != null && id.equals(1L)) {
+			//如果是管理员 获取所有符合要求的菜单id即checkedKey
+			checkedKeys = menuMapper.selectAllId();
+		} else {
+			//如果不是管理员
+			checkedKeys = menuMapper.selectMenuId(id);
+		}
+		RoleMenuVo roleMenuVo = new RoleMenuVo(menuTreeVoList, checkedKeys);
+		return ResponseResult.okResult(roleMenuVo);
+	}
+
+	private List<MenuTreeVo> builderMenuTreeVo(List<MenuTreeVo> menus, long parentId) {
+		List<MenuTreeVo> menuTree = menus.stream()
+				.filter(menu -> menu.getParentId().equals(parentId))
+				.map(menu -> menu.setChildren(getVoChildren(menu, menus)))
+				.collect(Collectors.toList());
+		return menuTree;
+	}
+
+	private List<MenuTreeVo> getVoChildren(MenuTreeVo menu, List<MenuTreeVo> menus) {
+		List<MenuTreeVo> childrenList = menus.stream()
+				.filter(m -> m.getParentId().equals(menu.getId()))
+				.map(m -> m.setChildren(getVoChildren(m, menus)))
+				.collect(Collectors.toList());
+		return childrenList;
+	}
+
+
+	private void changeChildren(MenuTreeVo menuTreeVo, Menu menu) {
 		List<Menu> menuTree = menu.getChildren();
-		List<MenuTreeDto> list = new ArrayList<>();
+		List<MenuTreeVo> list = new ArrayList<>();
 		menuTree.stream()
 				.forEach(m -> {
-					MenuTreeDto dto = new MenuTreeDto();
+					MenuTreeVo dto = new MenuTreeVo();
 					dto.setId(m.getId());
 					dto.setParentId(m.getParentId());
 					dto.setLabel(m.getMenuName());
 					changeChildren(dto, m);
 					list.add(dto);
 				});
-		menuTreeDto.setChildren(list);
+		menuTreeVo.setChildren(list);
 	}
 
 }

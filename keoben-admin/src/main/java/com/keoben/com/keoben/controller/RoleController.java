@@ -1,9 +1,10 @@
 package com.keoben.com.keoben.controller;
 
 import com.keoben.domain.ResponseResult;
-import com.keoben.domain.dto.AddRoleDto;
+import com.keoben.domain.vo.AddRoleVo;
 import com.keoben.domain.dto.ChangeStatusRoleDto;
 import com.keoben.domain.dto.RoleListDto;
+import com.keoben.domain.dto.UpdateRoleDto;
 import com.keoben.domain.vo.PageVo;
 import com.keoben.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,19 @@ public class RoleController {
 		return roleService.changeStatus(changeStatusRoleDto);
 	}
 
-
 	@PostMapping
-	public ResponseResult addRole(@RequestBody AddRoleDto addRoleDto) {
-		return roleService.addRole(addRoleDto);
+	public ResponseResult addRole(@RequestBody AddRoleVo addRoleVo) {
+		return roleService.addRole(addRoleVo);
 	}
 
+	@GetMapping("{id}")
+	public ResponseResult selectRoleList(@PathVariable Long id) {
+		return roleService.selectRoleList(id);
+	}
+
+	@PutMapping
+	public ResponseResult updateRole(@RequestBody UpdateRoleDto updateRoleDto) {
+		return roleService.updateRole(updateRoleDto);
+	}
 
 }

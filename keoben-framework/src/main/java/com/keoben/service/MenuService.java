@@ -2,7 +2,6 @@ package com.keoben.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.keoben.domain.ResponseResult;
-import com.keoben.domain.dto.AddRoleDto;
 import com.keoben.domain.dto.MenuListDto;
 import com.keoben.domain.entity.Menu;
 import com.keoben.domain.vo.PageVo;
@@ -32,5 +31,7 @@ public interface MenuService extends IService<Menu> {
 	ResponseResult deleteMenuById(Long id);
 
 	ResponseResult selectMenuTree();
+
+	ResponseResult selectRoleMenuTree(Long id);
 }
 

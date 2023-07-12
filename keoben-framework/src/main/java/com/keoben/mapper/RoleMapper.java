@@ -20,4 +20,6 @@ public interface RoleMapper extends BaseMapper<Role> {
 	void add(@Param("roleId") Long roleId, @Param("menuId") Long menuId);
 
 	void addBatch(@Param("roleId") Long id, @Param(("menuIds")) List<Long> menuIds);
+
+	void deleteMenu(Long id);
 }

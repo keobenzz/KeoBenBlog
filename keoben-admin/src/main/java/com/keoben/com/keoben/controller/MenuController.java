@@ -1,7 +1,6 @@
 package com.keoben.com.keoben.controller;
 
 import com.keoben.domain.ResponseResult;
-import com.keoben.domain.dto.AddRoleDto;
 import com.keoben.domain.dto.MenuListDto;
 import com.keoben.domain.entity.Menu;
 import com.keoben.domain.vo.PageVo;
@@ -44,6 +43,11 @@ public class MenuController {
 	@GetMapping("/treeselect")
 	public ResponseResult selectMenuTree() {
 		return menuService.selectMenuTree();
+	}
+
+	@GetMapping("/roleMenuTreeselect/{id}")
+	public ResponseResult selectRoleMenuTree(@PathVariable Long id){
+		return menuService.selectRoleMenuTree(id);
 	}
 
 }

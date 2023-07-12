@@ -12,6 +12,11 @@
             (#{roleId}, #{menuId})
         </foreach>
     </insert>
+    <delete id="deleteMenu">
+        DELETE
+        FROM sys_role_menu
+        WHERE role_id = #{id}
+    </delete>
     <select id="selectRoleKeyByUserId" resultType="java.lang.String">
         SELECT
             r.role_key

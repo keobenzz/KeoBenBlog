@@ -4,14 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.keoben.domain.ResponseResult;
-import com.keoben.domain.dto.AddRoleDto;
+import com.keoben.domain.vo.AddRoleVo;
 import com.keoben.domain.dto.ChangeStatusRoleDto;
-import com.keoben.domain.dto.MenuTreeDto;
 import com.keoben.domain.dto.RoleListDto;
+import com.keoben.domain.dto.UpdateRoleDto;
 import com.keoben.domain.entity.Menu;
 import com.keoben.domain.entity.Role;
 import com.keoben.domain.vo.PageVo;
-import com.keoben.mapper.MenuMapper;
 import com.keoben.mapper.RoleMapper;
 import com.keoben.service.RoleService;
 import com.keoben.utils.BeanCopyUtils;
@@ -70,13 +69,10 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 	}
 
 	@Override
-	public ResponseResult addRole(AddRoleDto addRoleDto) {
-		Role role = BeanCopyUtils.copyBean(addRoleDto, Role.class);
+	public ResponseResult addRole(AddRoleVo addRoleVo) {
+		Role role = BeanCopyUtils.copyBean(addRoleVo, Role.class);
 		save(role);
-		System.out.println("-----------------------------------------------------------");
-		System.out.println(role.getId());
-		System.out.println("-----------------------------------------------------------");
-		List<Long> menuIds = addRoleDto.getMenuIds();
+		List<Long> menuIds = addRoleVo.getMenuIds();
 		RoleMapper roleMapper = getBaseMapper();
 		//单次循环插入
 		//menuIds.stream()
@@ -84,6 +80,28 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 		//			roleMapper.add(role.getId(), menuId);
 		//		});
 		//批量插入
+		roleMapper.addBatch(role.getId(), menuIds);
+		return ResponseResult.okResult();
+	}
+
+	@Override
+	public ResponseResult selectRoleList(Long id) {
+		Role role = getById(id);
+		AddRoleVo addRoleVo = BeanCopyUtils.copyBean(role, AddRoleVo.class);
+		return ResponseResult.okResult(addRoleVo);
+	}
+
+	@Override
+	public ResponseResult updateRole(UpdateRoleDto updateRoleDto) {
+		Role role = BeanCopyUtils.copyBean(updateRoleDto, Role.class);
+		//修改基本信息
+		updateById(role);
+		//修改role_menu权限
+		RoleMapper roleMapper = getBaseMapper();
+		//删除原有权限
+		roleMapper.deleteMenu(updateRoleDto.getId());
+		//添加新权限
+		List<Long> menuIds = updateRoleDto.getMenuIds();
 		roleMapper.addBatch(role.getId(), menuIds);
 		return ResponseResult.okResult();
 	}
