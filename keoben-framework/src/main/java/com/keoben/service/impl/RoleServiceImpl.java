@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.keoben.domain.ResponseResult;
+import com.keoben.domain.dto.ChangeStatusRoleDto;
 import com.keoben.domain.dto.RoleListDto;
 import com.keoben.domain.entity.Role;
 import com.keoben.domain.vo.PageVo;
@@ -51,6 +52,15 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 		page(page, wrapper);
 		PageVo pageVo = new PageVo(page.getRecords(), page.getTotal());
 		return ResponseResult.okResult(pageVo);
+	}
+
+	@Override
+	public ResponseResult changeStatus(ChangeStatusRoleDto changeStatusRoleDto) {
+		Role role = new Role();
+		role.setId(changeStatusRoleDto.getRoleId());
+		role.setStatus(changeStatusRoleDto.getStatus());
+		updateById(role);
+		return ResponseResult.okResult();
 	}
 }
 
