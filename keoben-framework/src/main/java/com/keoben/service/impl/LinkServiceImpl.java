@@ -7,6 +7,7 @@ import com.keoben.constants.SystemConstants;
 import com.keoben.domain.ResponseResult;
 import com.keoben.domain.dto.AddLinkDto;
 import com.keoben.domain.dto.LinkListDto;
+import com.keoben.domain.dto.UpdateLinkDto;
 import com.keoben.domain.entity.Link;
 import com.keoben.domain.vo.LinkVo;
 import com.keoben.domain.vo.PageVo;
@@ -58,6 +59,20 @@ public class LinkServiceImpl extends ServiceImpl<LinkMapper, Link> implements Li
 	public ResponseResult addLink(AddLinkDto addLinkDto) {
 		Link link = BeanCopyUtils.copyBean(addLinkDto, Link.class);
 		save(link);
+		return ResponseResult.okResult(link);
+	}
+
+	@Override
+	public ResponseResult getLink(Long id) {
+		Link link = getById(id);
+		LinkVo linkVo = BeanCopyUtils.copyBean(link, LinkVo.class);
+		return ResponseResult.okResult(linkVo);
+	}
+
+	@Override
+	public ResponseResult updateLink(UpdateLinkDto updateLinkDto) {
+		Link link = BeanCopyUtils.copyBean(updateLinkDto, Link.class);
+		updateById(link);
 		return ResponseResult.okResult(link);
 	}
 }
