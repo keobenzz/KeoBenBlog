@@ -2,6 +2,7 @@ package com.keoben.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.keoben.domain.ResponseResult;
+import com.keoben.domain.dto.AddLinkDto;
 import com.keoben.domain.dto.LinkListDto;
 import com.keoben.domain.entity.Link;
 
@@ -16,5 +17,7 @@ public interface LinkService extends IService<Link> {
 	ResponseResult getAllLink();
 
 	ResponseResult pageLinkList(Integer pageNum, Integer pageSize, LinkListDto linkListDto);
+
+	ResponseResult addLink(AddLinkDto addLinkDto);
 }
 

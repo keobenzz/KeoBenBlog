@@ -1,12 +1,11 @@
 package com.keoben.com.keoben.controller;
 
 import com.keoben.domain.ResponseResult;
+import com.keoben.domain.dto.AddLinkDto;
 import com.keoben.domain.dto.LinkListDto;
 import com.keoben.service.LinkService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/content/link")
@@ -18,6 +17,11 @@ public class LinkController {
 	@GetMapping("/list")
 	public ResponseResult pageLinkList(Integer pageNum, Integer pageSize, LinkListDto linkListDto) {
 		return linkService.pageLinkList(pageNum, pageSize, linkListDto);
+	}
+
+	@PostMapping
+	public ResponseResult addLink(@RequestBody AddLinkDto addLinkDto) {
+		return linkService.addLink(addLinkDto);
 	}
 
 }

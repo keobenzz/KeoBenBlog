@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.keoben.constants.SystemConstants;
 import com.keoben.domain.ResponseResult;
+import com.keoben.domain.dto.AddLinkDto;
 import com.keoben.domain.dto.LinkListDto;
 import com.keoben.domain.entity.Link;
 import com.keoben.domain.vo.LinkVo;
@@ -51,6 +52,13 @@ public class LinkServiceImpl extends ServiceImpl<LinkMapper, Link> implements Li
 		page(page, wrapper);
 		PageVo pageVo = new PageVo(page.getRecords(), page.getTotal());
 		return ResponseResult.okResult(pageVo);
+	}
+
+	@Override
+	public ResponseResult addLink(AddLinkDto addLinkDto) {
+		Link link = BeanCopyUtils.copyBean(addLinkDto, Link.class);
+		save(link);
+		return ResponseResult.okResult(link);
 	}
 }
 
