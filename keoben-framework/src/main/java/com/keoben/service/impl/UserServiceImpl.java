@@ -1,10 +1,13 @@
 package com.keoben.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.keoben.domain.ResponseResult;
+import com.keoben.domain.dto.UserListDto;
 import com.keoben.domain.entity.User;
 import com.keoben.domain.enums.AppHttpCodeEnum;
+import com.keoben.domain.vo.PageVo;
 import com.keoben.domain.vo.UserInfoVo;
 import com.keoben.exception.SystemException;
 import com.keoben.mapper.UserMapper;
@@ -81,6 +84,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 		//存入数据库
 		save(user);
 		return ResponseResult.okResult();
+	}
+
+	@Override
+	public ResponseResult pageUserList(Integer pageNum, Integer pageSize, UserListDto userListDto) {
+		LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+		wrapper.like(StringUtils.hasText(userListDto.getUserName()),
+						User::getUserName, userListDto.getUserName())
+				.like(StringUtils.hasText(userListDto.getPhonenumber()),
+						User::getPhonenumber, userListDto.getPhonenumber())
+				.like(StringUtils.hasText(userListDto.getStatus()),
+						User::getStatus, userListDto.getStatus());
+		Page<User> page = new Page<>();
+		page.setCurrent(pageNum);
+		page.setSize(pageSize);
+		page(page, wrapper);
+		PageVo userPageVo = new PageVo(page.getRecords(), page.getTotal());
+		return ResponseResult.okResult(userPageVo);
 	}
 
 	private boolean userNameExist(String userName) {
