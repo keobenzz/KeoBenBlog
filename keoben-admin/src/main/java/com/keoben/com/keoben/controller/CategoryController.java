@@ -3,7 +3,9 @@ package com.keoben.com.keoben.controller;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 import com.keoben.domain.ResponseResult;
+import com.keoben.domain.dto.AddCategoryDto;
 import com.keoben.domain.dto.CategoryListDto;
+import com.keoben.domain.dto.UpdateCategoryDto;
 import com.keoben.domain.entity.Category;
 import com.keoben.domain.enums.AppHttpCodeEnum;
 import com.keoben.domain.vo.CategoryVo;
@@ -17,9 +19,7 @@ import javafx.stage.StageStyle;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
@@ -64,6 +64,21 @@ public class CategoryController {
 	@GetMapping("/list")
 	public ResponseResult pageCategoryList(Integer pageNum, Integer pageSize, CategoryListDto categoryListDto) {
 		return categoryService.pageCategoryList(pageNum, pageSize, categoryListDto);
+	}
+
+	@PostMapping
+	public ResponseResult addCategory(@RequestBody AddCategoryDto addCategoryDto){
+		return categoryService.addCategory(addCategoryDto);
+	}
+
+	@GetMapping("/{id}")
+	public ResponseResult getCategory(@PathVariable Long id) {
+		return categoryService.getCategory(id);
+	}
+
+	@PutMapping
+	public ResponseResult updateCategory(@RequestBody UpdateCategoryDto updateCategoryDto) {
+		return categoryService.updateCategory(updateCategoryDto);
 	}
 
 }

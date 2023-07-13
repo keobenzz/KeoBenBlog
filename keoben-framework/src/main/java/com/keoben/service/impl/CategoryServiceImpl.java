@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.keoben.constants.SystemConstants;
 import com.keoben.domain.ResponseResult;
+import com.keoben.domain.dto.AddCategoryDto;
 import com.keoben.domain.dto.CategoryListDto;
+import com.keoben.domain.dto.UpdateCategoryDto;
 import com.keoben.domain.entity.Article;
 import com.keoben.domain.entity.Category;
 import com.keoben.domain.vo.CategoryVo;
@@ -78,6 +80,27 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 		page(page, wrapper);
 		PageVo pageVo = new PageVo(page.getRecords(), page.getTotal());
 		return ResponseResult.okResult(pageVo);
+	}
+
+	@Override
+	public ResponseResult addCategory(AddCategoryDto addCategoryDto) {
+		Category category = BeanCopyUtils.copyBean(addCategoryDto, Category.class);
+		save(category);
+		return ResponseResult.okResult();
+	}
+
+	@Override
+	public ResponseResult getCategory(Long id) {
+		Category category = getById(id);
+		CategoryVo categoryVo = BeanCopyUtils.copyBean(category, CategoryVo.class);
+		return ResponseResult.okResult(categoryVo);
+	}
+
+	@Override
+	public ResponseResult updateCategory(UpdateCategoryDto updateCategoryDto) {
+		Category category = BeanCopyUtils.copyBean(updateCategoryDto, Category.class);
+		updateById(category);
+		return ResponseResult.okResult();
 	}
 
 }
