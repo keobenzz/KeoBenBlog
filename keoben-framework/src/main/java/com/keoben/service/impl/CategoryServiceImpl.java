@@ -103,5 +103,11 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 		return ResponseResult.okResult();
 	}
 
+	@Override
+	public ResponseResult deleteCategory(Long id) {
+		removeById(id);
+		return ResponseResult.okResult();
+	}
+
 }
 
