@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.keoben.domain.ResponseResult;
+import com.keoben.domain.dto.AddUserDto;
 import com.keoben.domain.dto.UserListDto;
 import com.keoben.domain.entity.User;
 import com.keoben.domain.enums.AppHttpCodeEnum;
@@ -19,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PutMapping;
+
+import java.util.List;
 
 /**
  * 用户表(User)表服务实现类
@@ -101,6 +104,53 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 		page(page, wrapper);
 		PageVo userPageVo = new PageVo(page.getRecords(), page.getTotal());
 		return ResponseResult.okResult(userPageVo);
+	}
+
+	@Override
+	public ResponseResult addUser(AddUserDto addUserDto) {
+		//判断用户名是否为空
+		if(!StringUtils.hasText(addUserDto.getUserName())) {
+			return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR, "必须填写用户名");
+		}
+		List<User> list = null;
+		//查询用户名是否存在
+		list = list(new LambdaQueryWrapper<User>()
+				.eq(StringUtils.hasText(addUserDto.getUserName()), User::getUserName, addUserDto.getUserName()));
+		if(list.size() > 0) {
+			return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR, "用户名已存在");
+		}
+		//查询手机号是否存在
+		if(StringUtils.hasText(addUserDto.getPhonenumber())) {
+			list = list(new LambdaQueryWrapper<User>()
+					.eq(User::getPhonenumber, addUserDto.getPhonenumber()));
+			if(list.size() > 0) {
+				return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR, "手机号已存在");
+			}
+		}
+		//查询邮箱是否存在
+		if(StringUtils.hasText(addUserDto.getEmail())) {
+			list = list(new LambdaQueryWrapper<User>()
+					.eq(User::getEmail, addUserDto.getEmail()));
+			if(list.size() > 0) {
+				return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR, "邮箱已存在");
+			}
+		}
+		User user = BeanCopyUtils.copyBean(addUserDto, User.class);
+		//密码加密
+		String pre = user.getPassword();
+		String post = passwordEncoder.encode(pre);
+		user.setPassword(post);
+		//新增用户基本信息
+		save(user);
+		//新增用户关联权限
+		Long userId = user.getId();
+		List<Long> roleIds = addUserDto.getRoleIds();
+		//判断是否增加权限
+		if(roleIds.size() > 0) {
+			UserMapper userMapper = getBaseMapper();
+			userMapper.addUserRole(userId, roleIds);
+		}
+		return ResponseResult.okResult();
 	}
 
 	private boolean userNameExist(String userName) {

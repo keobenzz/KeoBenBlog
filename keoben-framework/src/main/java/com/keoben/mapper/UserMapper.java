@@ -2,7 +2,9 @@ package com.keoben.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.keoben.domain.entity.User;
-import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 
 /**
@@ -13,4 +15,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 public interface UserMapper extends BaseMapper<User> {
 
+	void addUserRole(@Param("userId") Long userId, @Param("roleIds") List<Long> roleIds);
 }

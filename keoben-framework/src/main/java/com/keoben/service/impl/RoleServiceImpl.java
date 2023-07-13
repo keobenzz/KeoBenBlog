@@ -116,6 +116,12 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 		return ResponseResult.okResult();
 	}
 
+	@Override
+	public ResponseResult listAllRole() {
+		List<Role> roles = list();
+		return ResponseResult.okResult(roles);
+	}
+
 
 	private List<Menu> builderMenuTree(List<Menu> menus, long parentId) {
 		List<Menu> menuTree = menus.stream()
