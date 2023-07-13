@@ -6,10 +6,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.keoben.domain.ResponseResult;
 import com.keoben.domain.dto.AddUserDto;
 import com.keoben.domain.dto.UserListDto;
+import com.keoben.domain.dto.UserUpdateDto;
+import com.keoben.domain.entity.Role;
 import com.keoben.domain.entity.User;
 import com.keoben.domain.enums.AppHttpCodeEnum;
+import com.keoben.domain.vo.EchoUserVo;
 import com.keoben.domain.vo.PageVo;
 import com.keoben.domain.vo.UserInfoVo;
+import com.keoben.domain.vo.UserVo;
 import com.keoben.exception.SystemException;
 import com.keoben.mapper.UserMapper;
 import com.keoben.service.UserService;
@@ -149,6 +153,38 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 		if(roleIds.size() > 0) {
 			UserMapper userMapper = getBaseMapper();
 			userMapper.addUserRole(userId, roleIds);
+		}
+		return ResponseResult.okResult();
+	}
+
+	@Override
+	public ResponseResult getUser(Long id) {
+		UserMapper userMapper = getBaseMapper();
+		//获取用户所关联的角色id列表
+		List<Long> roleIds = userMapper.listRoleIds(id);
+		//获取所有角色的列表
+		List<Role> roles = userMapper.listRoles();
+		//获取角色信息
+		User user = getById(id);
+		EchoUserVo echoUserVo = BeanCopyUtils.copyBean(user, EchoUserVo.class);
+		//封装UserVo
+		UserVo userVo = new UserVo(roleIds, roles, echoUserVo);
+		return ResponseResult.okResult(userVo);
+	}
+
+	@Override
+	public ResponseResult updateUser(UserUpdateDto userUpdateDto) {
+		//更新用户基本信息
+		User user = BeanCopyUtils.copyBean(userUpdateDto, User.class);
+		updateById(user);
+		//更新用户权限
+		UserMapper userMapper = getBaseMapper();
+		//1.删除用户关联角色
+		userMapper.deleteUserRole(user.getId());
+		//2.增加选择的关联角色
+		List<Long> roleIds = userUpdateDto.getRoleIds();
+		if(roleIds.size() > 0) {
+			userMapper.addUserRole(user.getId(), roleIds);
 		}
 		return ResponseResult.okResult();
 	}

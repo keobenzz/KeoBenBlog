@@ -8,4 +8,20 @@
             (#{userId}, #{roleId})
         </foreach>
     </insert>
+    <delete id="deleteUserRole">
+        DELETE
+        FROM sys_user_role
+        WHERE user_id = #{userId}
+    </delete>
+    <select id="listRoleIds" resultType="java.lang.Long">
+        SELECT role_id
+        FROM sys_user_role
+        WHERE user_id = #{userId}
+    </select>
+    <select id="listRoles" resultType="com.keoben.domain.entity.Role">
+        SELECT
+            create_by, create_time, del_flag, id, remark, role_key,
+            role_name, role_sort, status, update_by, update_time
+        FROM sys_role
+    </select>
 </mapper>

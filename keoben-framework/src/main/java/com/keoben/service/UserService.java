@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.keoben.domain.ResponseResult;
 import com.keoben.domain.dto.AddUserDto;
 import com.keoben.domain.dto.UserListDto;
+import com.keoben.domain.dto.UserUpdateDto;
 import com.keoben.domain.entity.User;
 
 
@@ -24,5 +25,9 @@ public interface UserService extends IService<User> {
 	ResponseResult pageUserList(Integer pageNum, Integer pageSize, UserListDto userListDto);
 
 	ResponseResult addUser(AddUserDto addUserDto);
+
+	ResponseResult getUser(Long id);
+
+	ResponseResult updateUser(UserUpdateDto userUpdateDto);
 }
 

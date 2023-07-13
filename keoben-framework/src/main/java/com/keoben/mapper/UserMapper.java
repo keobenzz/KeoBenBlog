@@ -1,6 +1,7 @@
 package com.keoben.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.keoben.domain.entity.Role;
 import com.keoben.domain.entity.User;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,4 +17,10 @@ import java.util.List;
 public interface UserMapper extends BaseMapper<User> {
 
 	void addUserRole(@Param("userId") Long userId, @Param("roleIds") List<Long> roleIds);
+
+	List<Long> listRoleIds(Long userId);
+
+	List<Role> listRoles();
+
+	void deleteUserRole(Long userId);
 }
