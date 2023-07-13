@@ -3,6 +3,7 @@ package com.keoben.com.keoben.controller;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 import com.keoben.domain.ResponseResult;
+import com.keoben.domain.dto.CategoryListDto;
 import com.keoben.domain.entity.Category;
 import com.keoben.domain.enums.AppHttpCodeEnum;
 import com.keoben.domain.vo.CategoryVo;
@@ -58,6 +59,11 @@ public class CategoryController {
 			ResponseResult result = ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
 			WebUtils.renderString(response, JSON.toJSONString(result));
 		}
+	}
+
+	@GetMapping("/list")
+	public ResponseResult pageCategoryList(Integer pageNum, Integer pageSize, CategoryListDto categoryListDto) {
+		return categoryService.pageCategoryList(pageNum, pageSize, categoryListDto);
 	}
 
 }

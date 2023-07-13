@@ -2,6 +2,7 @@ package com.keoben.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.keoben.domain.ResponseResult;
+import com.keoben.domain.dto.CategoryListDto;
 import com.keoben.domain.entity.Category;
 import com.keoben.domain.vo.CategoryVo;
 
@@ -19,5 +20,6 @@ public interface CategoryService extends IService<Category> {
 
 	List<CategoryVo> listAllcategory();
 
+	ResponseResult pageCategoryList(Integer pageNum, Integer pageSize, CategoryListDto categoryListDto);
 }
 

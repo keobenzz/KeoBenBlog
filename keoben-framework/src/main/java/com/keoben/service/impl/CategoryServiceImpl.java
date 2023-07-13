@@ -1,18 +1,22 @@
 package com.keoben.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.keoben.constants.SystemConstants;
 import com.keoben.domain.ResponseResult;
+import com.keoben.domain.dto.CategoryListDto;
 import com.keoben.domain.entity.Article;
 import com.keoben.domain.entity.Category;
 import com.keoben.domain.vo.CategoryVo;
+import com.keoben.domain.vo.PageVo;
 import com.keoben.mapper.CategoryMapper;
 import com.keoben.service.ArticleService;
 import com.keoben.service.CategoryService;
 import com.keoben.utils.BeanCopyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -60,5 +64,21 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 		List<CategoryVo> categoryVos = BeanCopyUtils.copyBeanList(list, CategoryVo.class);
 		return categoryVos;
 	}
+
+	@Override
+	public ResponseResult pageCategoryList(Integer pageNum, Integer pageSize, CategoryListDto categoryListDto) {
+		LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
+		wrapper.like(StringUtils.hasText(categoryListDto.getName()),
+					Category::getName, categoryListDto.getName())
+				.like(StringUtils.hasText(categoryListDto.getStatus()),
+					Category::getStatus, categoryListDto.getStatus());
+		Page<Category> page = new Page<>();
+		page.setCurrent(pageNum);
+		page.setSize(pageSize);
+		page(page, wrapper);
+		PageVo pageVo = new PageVo(page.getRecords(), page.getTotal());
+		return ResponseResult.okResult(pageVo);
+	}
+
 }
 
