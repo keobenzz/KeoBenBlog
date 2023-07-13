@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public class PathUtils {
 
+    //七牛云
     public static String generateFilePath(String fileName){
         //根据日期生成路径   2022/1/15/
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
@@ -18,4 +19,5 @@ public class PathUtils {
         String fileType = fileName.substring(index);
         return new StringBuilder().append(datePath).append(uuid).append(fileType).toString();
     }
+
 }

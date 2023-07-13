@@ -31,6 +31,7 @@ public class WebUtils
         }
     }
 
+    //输出Excel
     public static void setDownLoadHeader(String filename, HttpServletResponse response) throws UnsupportedEncodingException {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");

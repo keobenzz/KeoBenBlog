@@ -7,6 +7,7 @@ import com.keoben.domain.ResponseResult;
 import com.keoben.domain.dto.AddUserDto;
 import com.keoben.domain.dto.UserListDto;
 import com.keoben.domain.dto.UserUpdateDto;
+import com.keoben.domain.entity.LoginUser;
 import com.keoben.domain.entity.Role;
 import com.keoben.domain.entity.User;
 import com.keoben.domain.enums.AppHttpCodeEnum;
@@ -19,6 +20,7 @@ import com.keoben.mapper.UserMapper;
 import com.keoben.service.UserService;
 import com.keoben.utils.BeanCopyUtils;
 import com.keoben.utils.SecurityUtils;
+import com.keoben.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -186,6 +188,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 		if(roleIds.size() > 0) {
 			userMapper.addUserRole(user.getId(), roleIds);
 		}
+		return ResponseResult.okResult();
+	}
+
+	@Override
+	public ResponseResult deleteUser(Long id) {
+		//获取当前用户信息
+		LoginUser loginUser = SecurityUtils.getLoginUser();
+		Long loginUserId = loginUser.getUser().getId();
+		if(loginUserId.equals(id)) {
+			return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR, "不能删除当前用户");
+		}
+		//删除用户信息
+		removeById(id);
+		//删除用户关联的角色信息
+		//UserMapper userMapper = getBaseMapper();
+		//userMapper.deleteUserRole(id);
 		return ResponseResult.okResult();
 	}
 

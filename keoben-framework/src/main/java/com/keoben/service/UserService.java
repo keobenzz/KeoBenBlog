@@ -29,5 +29,8 @@ public interface UserService extends IService<User> {
 	ResponseResult getUser(Long id);
 
 	ResponseResult updateUser(UserUpdateDto userUpdateDto);
+
+	ResponseResult deleteUser(Long id);
+
 }
 
