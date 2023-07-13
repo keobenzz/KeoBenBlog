@@ -75,5 +75,11 @@ public class LinkServiceImpl extends ServiceImpl<LinkMapper, Link> implements Li
 		updateById(link);
 		return ResponseResult.okResult(link);
 	}
+
+	@Override
+	public ResponseResult deleteLink(Long id) {
+		removeById(id);
+		return ResponseResult.okResult();
+	}
 }
 
